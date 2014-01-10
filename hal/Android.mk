@@ -26,6 +26,7 @@ endif
 LOCAL_SRC_FILES := \
 	audio_hw.c \
 	voice.c \
+	platform_info.c \
 	$(AUDIO_PLATFORM)/platform.c
 
 ifneq ($(BOARD_USES_CUSTOM_AUDIO_PLATFORM_PATH),)
@@ -128,32 +129,24 @@ LOCAL_SHARED_LIBRARIES := \
 	libtinyalsa \
 	libtinycompress \
 	libaudioroute \
-	libdl
+	libdl \
+	libexpat
 
 LOCAL_C_INCLUDES += \
 	external/tinyalsa/include \
 	external/tinycompress/include \
+	external/expat/lib \
 	$(call include-path-for, audio-route) \
 	$(call include-path-for, audio-effects) \
 	$(LOCAL_PATH)/$(AUDIO_PLATFORM) \
 	$(LOCAL_PATH)/audio_extn \
 	$(LOCAL_PATH)/voice_extn \
-	$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
+	$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include    
 
-LOCAL_ADDITIONAL_DEPENDENCIES += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr
-    
-ifneq ($(filter msm8974,$(AUDIO_PLATFORM)),)
-    LOCAL_C_INCLUDES += external/expat/lib
-    LOCAL_SHARED_LIBRARIES += libexpat
-    LOCAL_SRC_FILES += $(AUDIO_PLATFORM)/platform_parser.c
-endif
-
-ifeq ($(BUILD_QCOM_PROP_EXTNS),true)
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_LISTEN)),true)
     LOCAL_CFLAGS += -DAUDIO_LISTEN_ENABLED
     LOCAL_C_INCLUDES += $(TARGET_OUT_HEADERS)/mm-audio/audio-listen
     LOCAL_SRC_FILES += audio_extn/listen.c
-endif
 endif
 
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_AUXPCM_BT)),true)
