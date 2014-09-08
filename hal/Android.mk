@@ -122,6 +122,10 @@ ifneq ($(strip $(DOLBY_DDP)),true)
 endif
 endif
 
+ifeq ($(string $(AUDIO_FEATURE_ENABLED_LOW_LATENCY_CAPTURE)),true)
+    LOCAL_CFLAGS += -DLOW_LATENCY_CAPTURE_USE_CASE=1
+endif
+
 LOCAL_SHARED_LIBRARIES := \
 	liblog \
 	libcutils \
