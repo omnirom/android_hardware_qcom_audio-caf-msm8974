@@ -122,6 +122,10 @@ ifneq ($(strip $(DOLBY_DDP)),true)
 endif
 endif
 
+ifeq ($(AUDIO_FEATURE_LOW_LATENCY_PRIMARY),true)
+    LOCAL_CFLAGS += -DLOW_LATENCY_PRIMARY
+endif
+
 ifeq ($(string $(AUDIO_FEATURE_ENABLED_LOW_LATENCY_CAPTURE)),true)
     LOCAL_CFLAGS += -DLOW_LATENCY_CAPTURE_USE_CASE=1
 endif
