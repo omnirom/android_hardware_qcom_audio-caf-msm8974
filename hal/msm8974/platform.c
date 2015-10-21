@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  *
  * Copyright (C) 2013 The Android Open Source Project
@@ -43,6 +43,7 @@
 
 #define MIXER_XML_PATH "/system/etc/mixer_paths.xml"
 #define MIXER_XML_PATH_AUXPCM "/system/etc/mixer_paths_auxpcm.xml"
+#define MIXER_XML_PATH_WCD9330 "/system/etc/mixer_paths_wcd9330.xml"
 #define LIB_ACDB_LOADER "libacdbloader.so"
 #define AUDIO_DATA_BLOCK_MIXER_CTL "HDMI EDID"
 
@@ -594,13 +595,19 @@ void *platform_init(struct audio_device *adev)
         }
 
         snd_card_name = mixer_get_name(adev->mixer);
-        ALOGV("%s: snd_card_name: %s", __func__, snd_card_name);
+        ALOGD("%s: snd_card_name: %s", __func__, snd_card_name);
 
         my_data->hw_info = hw_info_init(snd_card_name);
         if (!my_data->hw_info) {
             ALOGE("%s: Failed to init hardware info", __func__);
         } else {
-            if (audio_extn_read_xml(adev, snd_card_num, MIXER_XML_PATH,
+            if (!strncmp(snd_card_name, "msm8226-tomtom-snd-card",
+                         sizeof("msm8226-tomtom-snd-card"))) {
+                ALOGE("%s: Call MIXER_XML_PATH_WCD9330", __func__);
+
+                adev->audio_route = audio_route_init(snd_card_num,
+                                                     MIXER_XML_PATH_WCD9330);
+            } else if (audio_extn_read_xml(adev, snd_card_num, MIXER_XML_PATH,
                                     MIXER_XML_PATH_AUXPCM) == -ENOSYS)
                 adev->audio_route = audio_route_init(snd_card_num,
                                                  MIXER_XML_PATH);
@@ -1438,11 +1445,8 @@ snd_device_t platform_get_input_snd_device(void *platform, audio_devices_t out_d
                 set_echo_reference(adev, true);
             }
         }
-#ifdef FM_ENABLED
-    } else if (source == AUDIO_SOURCE_FM_RX ||
-               source == AUDIO_SOURCE_FM_RX_A2DP) {
+    } else if (source == AUDIO_SOURCE_FM_TUNER) {
         snd_device = SND_DEVICE_IN_CAPTURE_FM;
-#endif
     } else if (source == AUDIO_SOURCE_DEFAULT) {
         goto exit;
     }
@@ -1477,10 +1481,8 @@ snd_device_t platform_get_input_snd_device(void *platform, audio_devices_t out_d
         } else if (in_device & AUDIO_DEVICE_IN_ANLG_DOCK_HEADSET ||
                    in_device & AUDIO_DEVICE_IN_DGTL_DOCK_HEADSET) {
             snd_device = SND_DEVICE_IN_USB_HEADSET_MIC;
-#ifdef FM_ENABLED
-        } else if (in_device & AUDIO_DEVICE_IN_FM_RX) {
+        } else if (in_device & AUDIO_DEVICE_IN_FM_TUNER) {
             snd_device = SND_DEVICE_IN_CAPTURE_FM;
-#endif
         } else {
             ALOGE("%s: Unknown input device(s) %#x", __func__, in_device);
             ALOGW("%s: Using default handset-mic", __func__);
@@ -1833,20 +1835,9 @@ int64_t platform_render_latency(audio_usecase_t usecase)
 int platform_update_usecase_from_source(int source, int usecase)
 {
     ALOGV("%s: input source :%d", __func__, source);
-    switch(source) {
-        case AUDIO_SOURCE_VOICE_UPLINK:
-            return USECASE_INCALL_REC_UPLINK;
-        case AUDIO_SOURCE_VOICE_DOWNLINK:
-            return USECASE_INCALL_REC_DOWNLINK;
-        case AUDIO_SOURCE_VOICE_CALL:
-            return USECASE_INCALL_REC_UPLINK_AND_DOWNLINK;
-#ifdef FM_ENABLED
-        case AUDIO_SOURCE_FM_RX_A2DP:
-            return USECASE_AUDIO_RECORD_FM_VIRTUAL;
-#endif        
-		default:
-            return usecase;
-    }
+    if(source == AUDIO_SOURCE_FM_TUNER)
+        usecase = USECASE_AUDIO_RECORD_FM_VIRTUAL;
+    return usecase;
 }
 
 bool platform_listen_update_status(snd_device_t snd_device)
