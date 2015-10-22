@@ -5,14 +5,14 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := AudioPolicyManager.cpp
 
-LOCAL_C_INCLUDES := $(TOPDIR)frameworks/av/services \
-                    $(TOPDIR)frameworks/av/services/audioflinger \
+LOCAL_C_INCLUDES := $(TOPDIR)frameworks/av-caf/services \
+                    $(TOPDIR)frameworks/av-caf/services/audioflinger \
                     $(call include-path-for, audio-effects) \
                     $(call include-path-for, audio-utils) \
-                    $(TOPDIR)frameworks/av/services/audiopolicy/common/include \
-                    $(TOPDIR)frameworks/av/services/audiopolicy/engine/interface \
-                    $(TOPDIR)frameworks/av/services/audiopolicy \
-                    $(TOPDIR)frameworks/av/services/audiopolicy/common/managerdefinitions/include \
+                    $(TOPDIR)frameworks/av-caf/services/audiopolicy/common/include \
+                    $(TOPDIR)frameworks/av-caf/services/audiopolicy/engine/interface \
+                    $(TOPDIR)frameworks/av-caf/services/audiopolicy \
+                    $(TOPDIR)frameworks/av-caf/services/audiopolicy/common/managerdefinitions/include \
                     $(call include-path-for, avextension)
 
 
