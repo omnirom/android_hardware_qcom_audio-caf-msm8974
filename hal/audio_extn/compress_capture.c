@@ -40,7 +40,7 @@
 #define COMPRESS_IN_CONFIG_CHANNELS 1
 #define COMPRESS_IN_CONFIG_PERIOD_SIZE 2048
 #define COMPRESS_IN_CONFIG_PERIOD_COUNT 16
-
+#define AMR_WB_FRAMESIZE 61
 
 struct compress_in_module {
     uint8_t             *in_buf;

@@ -190,6 +190,13 @@ static unsigned int audio_device_ref_count;
 
 static int set_voice_volume_l(struct audio_device *adev, float volume);
 
+#ifdef PCM_OFFLOAD_ENABLED
+static inline bool audio_is_offload_pcm(audio_format_t format)
+{
+    return ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_PCM_OFFLOAD);
+}
+#endif
+
 static int check_and_set_gapless_mode(struct audio_device *adev) {
 
 
