@@ -63,8 +63,6 @@
 #define PROXY_OPEN_RETRY_COUNT           100
 #define PROXY_OPEN_WAIT_TIME             20
 
-#define USECASE_AUDIO_PLAYBACK_PRIMARY USECASE_AUDIO_PLAYBACK_DEEP_BUFFER
-
 struct pcm_config pcm_config_deep_buffer = {
     .channels = 2,
     .rate = DEFAULT_OUTPUT_SAMPLING_RATE,
@@ -2508,15 +2506,34 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
         out->usecase = USECASE_AUDIO_PLAYBACK_LOW_LATENCY;
         out->config = pcm_config_low_latency;
         out->sample_rate = out->config.rate;
+        ALOGI("%s: out->usecase = AUDIO_PLAYBACK_LOW_LATENCY", __func__);
     } else {
+#ifdef DEEP_BUFFER_DEFAULT
         /* primary path is the default path selected if no other outputs are available/suitable */
-        out->usecase = USECASE_AUDIO_PLAYBACK_PRIMARY;
+        out->usecase = USECASE_AUDIO_PLAYBACK_DEEP_BUFFER;
         out->config = pcm_config_deep_buffer;
+        ALOGI("%s: out->usecase = AUDIO_OUTPUT_FLAG_DEEP_BUFFER", __func__);
+#else
+        // still evaluate the flags if explicit deep buffer is requested
+        if (out->flags & AUDIO_OUTPUT_FLAG_DEEP_BUFFER) {
+            out->usecase = USECASE_AUDIO_PLAYBACK_DEEP_BUFFER;
+            out->config = pcm_config_deep_buffer;
+            ALOGI("%s: out->usecase = AUDIO_OUTPUT_FLAG_DEEP_BUFFER", __func__);
+        } else {
+            out->usecase = USECASE_AUDIO_PLAYBACK_LOW_LATENCY;
+            out->config = pcm_config_low_latency;
+            ALOGI("%s: out->usecase = AUDIO_PLAYBACK_LOW_LATENCY", __func__);
+        }
+#endif
         out->sample_rate = out->config.rate;
     }
 
-    if ((out->usecase == USECASE_AUDIO_PLAYBACK_PRIMARY) ||
+#ifdef DEEP_BUFFER_DEFAULT
+    if ((out->usecase == USECASE_AUDIO_PLAYBACK_DEEP_BUFFER) ||
         (flags & AUDIO_OUTPUT_FLAG_PRIMARY)) {
+#else
+    if (flags & AUDIO_OUTPUT_FLAG_PRIMARY) {
+#endif
         /* Ensure the default output is not selected twice */
         if(adev->primary_output == NULL)
             adev->primary_output = out;

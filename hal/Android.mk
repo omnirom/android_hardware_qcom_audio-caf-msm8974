@@ -176,6 +176,10 @@ ifeq ($(strip $(AUDIO_FEATURE_DYNAMIC_MIXER_PATHS)),true)
   LOCAL_CFLAGS += -DDYNAMIC_MIXER_PATHS
 endif
 
+ifeq ($(strip $(AUDIO_FEATURE_DEEP_BUFFER_DEFAULT)),true)
+  LOCAL_CFLAGS += -DDEEP_BUFFER_DEFAULT
+endif
+
 LOCAL_COPY_HEADERS_TO   := mm-audio
 LOCAL_COPY_HEADERS      := audio_extn/audio_defs.h
 
