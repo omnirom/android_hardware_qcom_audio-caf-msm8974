@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8f5b13e_60b69eed",
+        "filename": "hal/audio_hw.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 2515,
+      "author": {
+        "id": 1000174
+      },
+      "writtenOn": "2015-12-17T14:36:10Z",
+      "side": 1,
+      "message": "Max, delete whitespace :P",
+      "range": {
+        "startLine": 2515,
+        "startChar": 76,
+        "endLine": 2515,
+        "endChar": 84
+      },
+      "revId": "83364756f5c456c4436f3c6e4957ba4b40fefc24",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    }
+  ]
+}
