@@ -27,6 +27,8 @@ LOCAL_SHARED_LIBRARIES := \
 	libtinyalsa
 
 LOCAL_MODULE:= libqcomvisualizer
+LOCAL_MODULE_OWNER := qcom
+LOCAL_PROPRIETARY_MODULE := true
 
 LOCAL_MODULE_RELATIVE_PATH := soundfx
 
