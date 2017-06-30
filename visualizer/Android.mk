@@ -26,6 +26,8 @@ LOCAL_SHARED_LIBRARIES := \
 	liblog \
 	libtinyalsa
 
+LOCAL_HEADER_LIBRARIES := libhardware_headers
+
 LOCAL_MODULE:= libqcomvisualizer
 LOCAL_MODULE_OWNER := qcom
 LOCAL_PROPRIETARY_MODULE := true
