@@ -36,6 +36,7 @@
 #define ALOGVV(a...) do { } while(0)
 #endif
 
+#include <stdio.h>
 #include <stdbool.h>
 #include <cutils/log.h>
 #include <tinyalsa/asoundlib.h>
