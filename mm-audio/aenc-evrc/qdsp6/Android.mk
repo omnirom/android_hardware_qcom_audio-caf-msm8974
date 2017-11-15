@@ -55,6 +55,7 @@ mm-evrc-enc-test-inc     += $(TARGET_OUT_HEADERS)/mm-audio/audio-alsa
 endif
 LOCAL_MODULE            := mm-aenc-omxevrc-test
 LOCAL_MODULE_TAGS       := optional
+LOCAL_VENDOR_MODULE     := true
 LOCAL_CFLAGS            := $(libOmxEvrcEnc-def)
 LOCAL_C_INCLUDES        := $(mm-evrc-enc-test-inc)
 LOCAL_PRELINK_MODULE    := false

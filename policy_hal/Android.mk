@@ -48,6 +48,8 @@ LOCAL_CFLAGS += -Wno-error -fpermissive
 
 LOCAL_MODULE := libaudiopolicymanager
 
+LOCAL_VENDOR_MODULE := true
+
 include $(BUILD_SHARED_LIBRARY)
 
 endif
