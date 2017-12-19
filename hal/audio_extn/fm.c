@@ -23,13 +23,14 @@
 
 #include <errno.h>
 #include <math.h>
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include "audio_hw.h"
 #include "platform.h"
 #include "platform_api.h"
 #include <stdlib.h>
 #include <cutils/str_parms.h>
+#include <unistd.h>
 
 #ifdef FM_POWER_OPT
 #define AUDIO_PARAMETER_KEY_HANDLE_FM "handle_fm"

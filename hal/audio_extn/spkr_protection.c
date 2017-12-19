@@ -33,7 +33,7 @@
 
 #include <errno.h>
 #include <math.h>
-#include <cutils/log.h>
+#include <log/log.h>
 #include <fcntl.h>
 #include "audio_hw.h"
 #include "platform.h"
@@ -45,6 +45,9 @@
 #include <cutils/properties.h>
 #include "audio_extn.h"
 #include <linux/msm_audio_acdb.h>
+#include <unistd.h>
+#include <pthread.h>
+
 
 #ifdef SPKR_PROT_ENABLED
 
