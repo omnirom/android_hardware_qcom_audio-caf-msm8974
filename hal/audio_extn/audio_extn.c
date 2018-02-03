@@ -18,7 +18,7 @@
  */
 
 #define LOG_TAG "audio_hw_extn"
-/*#define LOG_NDEBUG 0*/
+#define LOG_NDEBUG 0
 #define LOG_NDDEBUG 0
 
 #include <stdlib.h>
@@ -83,9 +83,12 @@ bool audio_extn_should_use_handset_anc(int in_channels)
     char prop_aanc[PROPERTY_VALUE_MAX] = "false";
 
     property_get("persist.aanc.enable", prop_aanc, "0");
+ ALOGE("%s: Retrieved value for %s in audio_extn_should_use_handset_anc: %s", __func__,"persist.aanc.enable", prop_aanc);
     if (!strncmp("true", prop_aanc, 4)) {
         ALOGD("%s: AANC enabled in the property", __func__);
         aextnmod.aanc_enabled = 1;
+    } else {
+        ALOGD("%s: AANC disabled", __func__);
     }
 
     return (aextnmod.aanc_enabled && aextnmod.anc_enabled
@@ -97,9 +100,12 @@ bool audio_extn_should_use_fb_anc(void)
   char prop_anc[PROPERTY_VALUE_MAX] = "feedforward";
 
   property_get("persist.headset.anc.type", prop_anc, "0");
+ALOGE("%s: Retrieved value for %s in audio_extn_should_use_fb_anc: %s", __func__,"persist.headset.anc.type", prop_anc);
   if (!strncmp("feedback", prop_anc, sizeof("feedback"))) {
     ALOGD("%s: FB ANC headset type enabled\n", __func__);
     return true;
+  } else 
+    ALOGD("%s: FB ANC headset disabled\n", __func__);
   }
   return false;
 }
@@ -107,14 +113,13 @@ bool audio_extn_should_use_fb_anc(void)
 void audio_extn_set_anc_parameters(struct audio_device *adev,
                                    struct str_parms *parms)
 {
-    int ret;
-    char value[32] ={0};
+    char value[PROPERTY_VALUE_MAX];
     struct listnode *node;
     struct audio_usecase *usecase;
 
-    ret = str_parms_get_str(parms, AUDIO_PARAMETER_KEY_ANC, value,
-                            sizeof(value));
-    if (ret >= 0) {
+    property_get(AUDIO_PARAMETER_KEY_ANC, value, ""); 
+ALOGE("%s: Retrieved value for %s in audio_extn_set_anc_parameters: %s", __func__,AUDIO_PARAMETER_KEY_ANC, value);
+    if (strlen(value) > 0) {
         if (strcmp(value, "true") == 0)
             aextnmod.anc_enabled = true;
         else
@@ -146,15 +151,14 @@ void audio_extn_set_anc_parameters(struct audio_device *adev,
 void audio_extn_set_fluence_parameters(struct audio_device *adev,
                                             struct str_parms *parms)
 {
-    int ret = 0, err;
-    char value[32];
+    int ret = 0;
+    char value[PROPERTY_VALUE_MAX];
     struct listnode *node;
     struct audio_usecase *usecase;
 
-    err = str_parms_get_str(parms, AUDIO_PARAMETER_KEY_FLUENCE,
-                                 value, sizeof(value));
-    ALOGV_IF(err >= 0, "%s: Set Fluence Type to %s", __func__, value);
-    if (err >= 0) {
+    property_get(AUDIO_PARAMETER_KEY_FLUENCE, value, "false");
+	ALOGE("%s: Retrieved value for %s in audio_extn_set_fluence_parameters: %s", __func__,AUDIO_PARAMETER_KEY_FLUENCE,value);
+    if (strlen(value) <= 0) {
         ret = platform_set_fluence_type(adev->platform, value);
         if (ret != 0) {
             ALOGE("platform_set_fluence_type returned error: %d", ret);
@@ -175,16 +179,17 @@ void audio_extn_set_fluence_parameters(struct audio_device *adev,
 int audio_extn_get_fluence_parameters(const struct audio_device *adev,
                        struct str_parms *query, struct str_parms *reply)
 {
-    int ret = 0, err;
+    int ret = 0;
     char value[256] = {0};
 
-    err = str_parms_get_str(query, AUDIO_PARAMETER_KEY_FLUENCE, value,
-                                                          sizeof(value));
-    if (err >= 0) {
+    property_get(AUDIO_PARAMETER_KEY_FLUENCE, value, "false");
+	ALOGE("%s: Retrieved value for %s in audio_extn_get_fluence_parameters1: %s with code: %d", __func__,AUDIO_PARAMETER_KEY_FLUENCE,value);
+    if (strlen(value) <= 0) {
         ret = platform_get_fluence_type(adev->platform, value, sizeof(value));
         if (ret >= 0) {
             ALOGV("%s: Fluence Type is %s", __func__, value);
-            str_parms_add_str(reply, AUDIO_PARAMETER_KEY_FLUENCE, value);
+            property_set(AUDIO_PARAMETER_KEY_FLUENCE, value);
+	ALOGE("%s: Set value for %s in audio_extn_get_fluence_parameters2: %s", __func__,AUDIO_PARAMETER_KEY_FLUENCE,value);
         } else
             goto done;
     }
@@ -416,6 +421,7 @@ void audio_extn_set_parameters(struct audio_device *adev,
                                struct str_parms *parms)
 {
    audio_extn_set_anc_parameters(adev, parms);
+ALOGE("%s: bourdail ca va y aller oui?",  __func__);
    audio_extn_set_fluence_parameters(adev, parms);
    audio_extn_set_afe_proxy_parameters(adev, parms);
    audio_extn_fm_set_parameters(adev, parms);

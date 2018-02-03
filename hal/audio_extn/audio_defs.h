@@ -55,7 +55,7 @@
 #define AUDIO_PARAMETER_KEY_FM_VOLUME "fm_volume"
 
 /* Query Fluence type */
-#define AUDIO_PARAMETER_KEY_FLUENCE "fluence"
+#define AUDIO_PARAMETER_KEY_FLUENCE "ro.qc.sdk.audio.fluencetype"
 #define AUDIO_PARAMETER_VALUE_QUADMIC "quadmic"
 #define AUDIO_PARAMETER_VALUE_DUALMIC "dualmic"
 #define AUDIO_PARAMETER_KEY_NO_FLUENCE "none"
