@@ -239,6 +239,7 @@ void *platform_init(struct audio_device *adev)
     my_data->fluence_type = FLUENCE_NONE;
 
     property_get("ro.qc.sdk.audio.fluencetype", value, "");
+    strcpy(value,"fluence");
     if (!strncmp("fluencepro", value, sizeof("fluencepro"))) {
         my_data->fluence_type = FLUENCE_QUAD_MIC;
     } else if (!strncmp("fluence", value, sizeof("fluence"))) {
