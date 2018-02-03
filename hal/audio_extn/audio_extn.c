@@ -18,7 +18,7 @@
  */
 
 #define LOG_TAG "audio_hw_extn"
-/*#define LOG_NDEBUG 0*/
+#define LOG_NDEBUG 0
 #define LOG_NDDEBUG 0
 
 #include <stdlib.h>
@@ -153,7 +153,8 @@ void audio_extn_set_fluence_parameters(struct audio_device *adev,
 
     err = str_parms_get_str(parms, AUDIO_PARAMETER_KEY_FLUENCE,
                                  value, sizeof(value));
-    ALOGV_IF(err >= 0, "%s: Set Fluence Type to %s", __func__, value);
+    strcpy(value,"fluence");
+    ALOGE("%s: Set Fluence Type to %s", __func__, value);
     if (err >= 0) {
         ret = platform_set_fluence_type(adev->platform, value);
         if (ret != 0) {
@@ -180,11 +181,13 @@ int audio_extn_get_fluence_parameters(const struct audio_device *adev,
 
     err = str_parms_get_str(query, AUDIO_PARAMETER_KEY_FLUENCE, value,
                                                           sizeof(value));
+    strcpy(value,"fluence");
     if (err >= 0) {
         ret = platform_get_fluence_type(adev->platform, value, sizeof(value));
         if (ret >= 0) {
             ALOGV("%s: Fluence Type is %s", __func__, value);
             str_parms_add_str(reply, AUDIO_PARAMETER_KEY_FLUENCE, value);
+    strcpy(value,"fluence");
         } else
             goto done;
     }
@@ -416,6 +419,7 @@ void audio_extn_set_parameters(struct audio_device *adev,
                                struct str_parms *parms)
 {
    audio_extn_set_anc_parameters(adev, parms);
+ALOGE("%s: bourdail ca va y aller oui?",  __func__);
    audio_extn_set_fluence_parameters(adev, parms);
    audio_extn_set_afe_proxy_parameters(adev, parms);
    audio_extn_fm_set_parameters(adev, parms);

@@ -1812,11 +1812,15 @@ static int out_set_parameters(struct audio_stream *stream, const char *kvpairs)
         audio_extn_extspk_update(adev->extspk);
     }
 
+ALOGE("%s: c'est là c'est là!!!", __func__);
+
     if (out == adev->primary_output) {
         pthread_mutex_lock(&adev->lock);
+ALOGE("%s: go!go!go!", __func__);
         audio_extn_set_parameters(adev, parms);
         pthread_mutex_unlock(&adev->lock);
     }
+ALOGE("%s: alors?", __func__);
     if (is_offload_usecase(out->usecase)) {
         pthread_mutex_lock(&out->lock);
         ret = parse_compress_metadata(out, parms);
